@@ -1,0 +1,10 @@
+version: "3"
+
+services: 
+ portainer:
+  image: "portainer/portainer"
+  restart: "unless-stopped"
+  ports: 
+    - "9000:9000"
+
+
