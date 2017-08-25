@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+  xrdp: 
+    build: .
+    ports: 
+     - "3390:3389"
