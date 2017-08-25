@@ -1,1 +1,1 @@
-alias chromium="chromium --no-sandbox"
+export PATH=$HOME/bin:$PATH
