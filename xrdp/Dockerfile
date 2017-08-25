@@ -7,7 +7,7 @@ FROM debian:jessie
 
 RUN apt-get update
 
-RUN apt-get install -yq xterm xrdp apt-utils sudo i3 vim chromium i3status dmenu 
+RUN apt-get install -yq xterm xrdp apt-utils sudo i3 vim chromium i3status dmenu openssh-server git 
 
 #hard code the root pwd
 #RUN echo "root:docker" | chpasswd
@@ -18,6 +18,8 @@ RUN adduser --disabled-password --gecos "" dockerx
 RUN adduser dockerx sudo
 RUN adduser dockerx users
 RUN echo "dockerx:docker" | chpasswd
+RUN setcap-r `which i3status`
+RUN alias chromium="chromium --no-sandbox"
 
 ADD run.sh /usr/local/bin/run
 
