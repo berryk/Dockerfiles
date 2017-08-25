@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  mqtt-scripts:
+    image: "berryk/mqtt-scripts-scripts"
+    restart: "unless-stopped"
+    network_mode: "host"
+
+
+  chromecast-mqtt:
+    image: "berryk/chromecast-mqtt"
+    restart: "unless-stopped"
+    network_mode: "host"
+    depends_on: 
+      - mqtt-scripts
+
+  musiccast-mqtt:
+    image: "berryk/musiccastcontrol"   
+    restart: "unless-stopped"
+    network_mode: "host"
+    depends_on: 
+      - mqtt-scripts 
