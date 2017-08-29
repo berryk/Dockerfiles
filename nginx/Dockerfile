@@ -4,4 +4,9 @@
 FROM nginx:latest
 MAINTAINER Keith Berry "keithwberry@gmail.com"
 
-COPY default.conf /etc/nginx/conf.d/default.conf
+WORKDIR /usr/src
+
+COPY generate_ca_certs.sh .
+COPY setupfolders.sh . 
+COPY create_user.sh . 
+COPY conf/* /etc/nginx/conf.d/.
