@@ -1,0 +1,3 @@
+# starting nginx 
+
+sudo docker run --rm -it --net=host -v/home/berryk/Dropbox/nuc/Dockerfiles/nginx/conf:/etc/nginx/conf.d --name nginx-running nginx 
