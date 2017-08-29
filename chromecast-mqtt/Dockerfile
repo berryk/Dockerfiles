@@ -7,6 +7,7 @@ MAINTAINER Keith Berry "keithwberry@gmail.com"
 WORKDIR /usr/src/app
 
 ADD https://github.com/berryk/chromecast-mqtt-connector/archive/master.tar.gz .
+RUN gunzip -c master.tar.gz | tar xvf - 
 
 RUN pip install --no-cache-dir -r ./chromecast-mqtt-connector-master/requirements.txt
 

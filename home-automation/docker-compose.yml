@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  mqtt:
+    image: "toke/mosquitto"
+    restart: "unless-stopped"
+    ports:
+      - 1883:1883
+      - 9001:9001 
+
+  mqtt-scripts:
+    image: "berryk/mqtt-scripts-scripts"
+    restart: "unless-stopped"
+    network_mode: "host"
+    depends_on: 
+      - mqtt
+
+  chromecast-mqtt:
+    image: "berryk/chromecast-mqtt"
+    restart: "unless-stopped"
+    network_mode: "host"
+    depends_on: 
+      - mqtt-scripts
+
+  musiccast-mqtt:
+    image: "berryk/musiccastcontrol"   
+    restart: "unless-stopped"
+    network_mode: "host"
+    depends_on: 
+      - mqtt-scripts 
