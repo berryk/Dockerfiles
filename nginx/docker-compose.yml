@@ -2,7 +2,13 @@ version: "3"
 
 services:
   nginx:
-    build: .
+    build: nginx/.
     #restart: "unless-stopped"
     ports:
       - 443:443
+
+  auth-duo:
+    build: duo-auth-request/.
+    #restart: "unless-stopped"
+    ports: 
+      - 3000:3000
