@@ -24,30 +24,33 @@ app.use(bodyParser.urlencoded({
 }));
 
 
-app.get('/',function(req, resp){
-  console.log(req.url);
-  resp.sendStatus(403); 
+app.get('/login', function(req, resp){
+
+      var sig_req = Duo.sign_request(ikey,skey,akey,user); 
+      resp.render('login', { host: "api-1b4b0886.duosecurity.com", sig_request: sig_req, post_action: "/validate"});
 });
 
-app.get('/login', jwt.active(), function(req, resp){
+app.get('/auth', jwt.active(), function(req, resp){
 
     resp.sendStatus(200);
 });
 
-app.post('/response',function(req, resp){
+app.post('/validate',function(req, resp){
 
   //console.log(req.body);
   var sig_response = req.body.sig_response;
   var auth_user=Duo.verify_response(ikey, skey, akey, sig_response);
 
-  //console.log("User:",auth_user);
+  console.log("User:",auth_user);
   
   if( user == auth_user ){
     var jwt = resp.jwt({
       user: auth_user 
     });
     //console.log(jwt);
-    resp.sendStatus(200);
+    var referer = req.header('Referer');
+    console.log("Referer:", referer); 
+    resp.redirect(referer);
   } else {
     resp.sendStatus(403);
   }
@@ -60,8 +63,10 @@ app.listen(port, function(){
 app.use(function(err, req, resp, next) {
   if (err.name == 'JWTExpressError') {
       // user is unauthorized
-      var sig_req = Duo.sign_request(ikey,skey,akey,user); 
-      resp.render('login', { host: "api-1b4b0886.duosecurity.com", sig_request: sig_req, post_action: "response"});
+
+      resp.sendStatus(403);
+//      var sig_req = Duo.sign_request(ikey,skey,akey,user); 
+//      resp.render('login', { host: "api-1b4b0886.duosecurity.com", sig_request: sig_req, post_action: "response"});
   } else {
       next(err);
   }
