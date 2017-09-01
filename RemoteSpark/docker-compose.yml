@@ -1,0 +1,11 @@
+version: '3'
+  
+services: 
+  remotespark:
+    image: "berryk/remotespark"
+    restart: unless-stopped
+    ports: 
+      - "8080:80"
+
+ 
+      
