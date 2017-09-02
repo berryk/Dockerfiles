@@ -1,0 +1,8 @@
+version: "3" 
+
+services: 
+  dropbox:
+    image: janeczku/dropbox 
+    restart: unless-stopped
+    ports: 
+      - "17500:17500" 

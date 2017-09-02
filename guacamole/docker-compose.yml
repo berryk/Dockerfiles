@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
   db:
@@ -14,11 +14,11 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
 
   guacd:
-    image: glyptodon/guacd:0.9.9
+    image: glyptodon/guacd:1.4
     restart: always
 
   client:
-    image: glyptodon/guacamole:0.9.9
+    image: glyptodon/guacamole:1.4
     restart: always
     ports:
       - 8080:8080
