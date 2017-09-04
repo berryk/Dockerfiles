@@ -1,4 +1,4 @@
-version: "3" 
+version: "3.2" 
 
 services: 
   dropbox:
@@ -6,3 +6,34 @@ services:
     restart: unless-stopped
     ports: 
       - "17500:17500" 
+    volumes: 
+      -  type: volume
+         source: dropbox
+         target: /dbox/Dropbox
+      -  type: volume
+         source: dropbox-r 
+         target: /dbox/Dropbox/R
+      -  type: volume
+         source: docker-registry
+         target: /dbox/Dropbox/docker-registry 
+      -  type: volume
+         source: dropbox-config
+         target: /dbox/.dropbox
+
+  rstudio: 
+    image: berryk/rstudio
+    restart: unless-stopped
+    ports: 
+      - 8787:8787
+    environment: 
+      ROOT: "TRUE"
+    volumes: 
+      - type: volume
+        source: dropbox-r
+        target: /dropbox
+
+volumes: 
+  dropbox:
+  dropbox-r:
+  docker-registry:
+  dropbox-config: 

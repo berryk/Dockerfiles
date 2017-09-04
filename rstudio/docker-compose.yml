@@ -1,0 +1,12 @@
+version: "3"
+
+services: 
+   rstudio: 
+     image: rocker/rstudio 
+     restart: unless-stopped
+     ports: 
+       - 8787:8787
+     environment: 
+       ROOT: "TRUE"
+
+
