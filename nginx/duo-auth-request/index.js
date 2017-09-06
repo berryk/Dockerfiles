@@ -17,7 +17,8 @@ app.use(cookieParser());
 app.set('views', './views');
 app.set('view engine','pug');
 
-app.use(jwt.init('NUXjuns2t18ilBJTKYGmM8XvignqutLevZED8vfo',{cookieOptions:{httpOnly: true, domain: '88highlandavenue.com'}}));
+app.use(jwt.init('NUXjuns2t18ilBJTKYGmM8XvignqutLevZED8vfo',{cookieOptions:{httpOnly: true, domain: '.88highlandavenue.com'},stales:4320000}));
+//app.use(jwt.init('NUXjuns2t18ilBJTKYGmM8XvignqutLevZED8vfo'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
