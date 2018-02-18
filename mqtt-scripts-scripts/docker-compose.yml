@@ -1,0 +1,9 @@
+version: '3'
+  
+services: 
+  mqtt-scripts-scripts:
+    image: "berryk/mqtt-scripts-scripts"
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
