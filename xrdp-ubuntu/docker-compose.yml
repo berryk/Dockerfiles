@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  xrdp: 
+    build: .
+    ports: 
+     - "3390:3389"
+    restart: "unless-stopped"
+

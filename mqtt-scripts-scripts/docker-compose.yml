@@ -4,6 +4,7 @@ services:
   mqtt-scripts-scripts:
     image: "berryk/mqtt-scripts-scripts"
     restart: unless-stopped
+    network_mode: "host" 
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
