@@ -6,6 +6,7 @@ var jwt = require('jwt-express');
 var cookieParser = require('cookie-parser');
 
 const port = 3000; 
+const timeout = process.env.TIMEOUT || 4320000; 
 
 var akey = 'Xkex;3(h%H9.EwI[0tE0=Q$Xa}8mUjCy;4$v[ty;';
 var ikey = 'DIAFN376MVBC99W16C2I'; 
@@ -17,7 +18,7 @@ app.use(cookieParser());
 app.set('views', './views');
 app.set('view engine','pug');
 
-app.use(jwt.init('NUXjuns2t18ilBJTKYGmM8XvignqutLevZED8vfo',{cookieOptions:{httpOnly: true, domain: '.88highlandavenue.com'},stales:4320000}));
+app.use(jwt.init('NUXjuns2t18ilBJTKYGmM8XvignqutLevZED8vfo',{cookieOptions:{httpOnly: true, domain: '.88highlandavenue.com'},stales:timeout}));
 //app.use(jwt.init('NUXjuns2t18ilBJTKYGmM8XvignqutLevZED8vfo'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
