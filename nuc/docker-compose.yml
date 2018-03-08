@@ -128,7 +128,7 @@ services:
     ports: 
       - 8787:8787
     environment: 
-      ROOT: "TRUE"
+      - ROOT="TRUE"
     volumes: 
       - type: volume
         source: dropbox-r
