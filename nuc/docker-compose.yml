@@ -1,0 +1,273 @@
+version: "3.2" 
+
+services: 
+
+  portainer: 
+    container_name: portainer
+    hostname: portainer
+    image: "portainer/portainer"
+    restart: unless-stopped
+    ports: 
+      - "9000:9000"
+    volumes:
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+        read_only: true
+      - type: volume
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
+
+  dd-agent:
+    container_name: dd-agent
+    hostname: ddagent
+    image: datadog/agent:latest
+    restart: unless-stopped
+    environment:
+      - DD_API_KEY=7aa7e30d732f2e062e9ed52b3d3102bf
+    volumes: 
+      - type: volume
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
+      - type: volume
+        source: /proc/
+        target: /host/proc/
+        read_only: true
+      - type: volume
+        source: /sys/fs/cgroup/
+        target: /host/sys/fs/cgroup
+        read_only: true
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+        read_only: true
+  
+  nginx:
+    container_name: nginx
+    hostname: nginx
+    build: nginx/nginx/.
+    restart: unless-stopped
+    ports:
+      - 443:443
+    volumes:
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+        read_only: true
+
+  auth-duo:
+    container_name: auth-duo
+    hostname: auth-duo
+    build: nginx/duo-auth-request/.
+    restart: unless-stopped
+    ports: 
+      - 3000:3000
+    environment:
+      - TIMEOUT=86400000
+    volumes:
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+        read_only: true    
+     
+  dropbox:
+    image: janeczku/dropbox
+    container_name: dropbox
+    hostname: dropbox
+    restart: unless-stopped
+    ports: 
+      - "17500:17500" 
+    volumes: 
+      -  type: volume
+         source: dropbox
+         target: /dbox/Dropbox
+      -  type: volume
+         source: dropbox-r 
+         target: /dbox/Dropbox/R
+      -  type: volume
+         source: docker-registry
+         target: /dbox/Dropbox/docker-registry 
+      -  type: volume
+         source: docker-homeseer
+         target: /dbox/Dropbox/homeseer 
+      -  type: volume
+         source: dropbox-config
+         target: /dbox/.dropbox
+      -  type: volume
+         source: /etc/localtime
+         target: /etc/localtime
+         read_only: true
+      -  type: volume
+         source: /etc/timezone
+         target: /etc/timezone
+         read_only: true
+
+  rstudio: 
+    image: berryk/rstudio
+    container_name: rstudio
+    hostname: rstudio
+    restart: unless-stopped
+    ports: 
+      - 8787:8787
+    environment: 
+      ROOT: "TRUE"
+    volumes: 
+      - type: volume
+        source: dropbox-r
+        target: /dropbox
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+        read_only: true
+        
+  homeseer:
+    image: "berryk/homeseer:latest"
+    container_name: homeseer
+    hostname: homeseer
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "11000:11000" 
+    volumes:
+      - type: volume
+        source: dropbox-homeseer
+        target: /opt/homeseer
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+        read_only: true
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+      
+  remotespark:
+    container_name: remotespark
+    hostname: remotespark
+    image: "berryk/remotespark"
+    restart: unless-stopped
+    ports: 
+      - "8080:80"
+    volumes:
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+        read_only: true
+
+  mqtt:
+    container_name: mqtt
+    hostname: mqtt
+    image: "toke/mosquitto"
+    restart: unless-stopped
+    ports: 
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+        read_only: true
+ 
+  chromecast-mqtt:
+    container_name: chromecast-mqtt
+    hostname: chromecast-mqtt
+    image: "berryk/chromecast-mqtt"
+    restart: unless-stopped
+    network_mode: "host" 
+    volumes:
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+        read_only: true
+ 
+   musiccastcontrol:
+    container_name: musiccastcontrol
+    hostname: musiccastcontrol
+    image: "berryk/musiccastcontrol"
+    restart: unless-stopped
+    network_mode: "host" 
+    volumes:
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+        read_only: true
+        
+  mqtt-scripts:
+    container_name: mqtt-scripts
+    hostname: mqtt-scripts
+    image: "berryk/mqtt-scripts-scripts"
+    restart: unless-stopped
+    network_mode: "host" 
+    volumes:
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+        read_only: true
+  
+  wetty:
+    container_name: wetty
+    hostname: wetty
+    image: "krishnasrinivas/wetty"
+    restart: unless-stopped
+    ports: 
+      - "3000:3000"
+    volumes:
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+        read_only: true
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+        read_only: true
+
+volumes: 
+  dropbox:
+  dropbox-r:
+  docker-registry:
+  dropbox-homeseer:
+  dropbox-config: 

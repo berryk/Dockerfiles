@@ -1,8 +1,27 @@
 version: "3.2" 
 
 services: 
+
+  portainer: 
+    container_name: mqtt
+    hostname: mqtt
+    image: "toke/mosquitto"
+    restart: unless-stopped
+    ports: 
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+
   dropbox:
-    image: janeczku/dropbox 
+    image: janeczku/dropbox
+    container_name: dropbox
+    hostname: dropbox
     restart: unless-stopped
     ports: 
       - "17500:17500" 
@@ -19,9 +38,17 @@ services:
       -  type: volume
          source: dropbox-config
          target: /dbox/.dropbox
+      -  type: volume
+         source: /etc/localtime
+         target: /etc/localtime
+      -  type: volume
+         source: /etc/timezone
+         target: /etc/timezone
 
   rstudio: 
     image: berryk/rstudio
+    container_name: rstudio
+    hostname: rstudio
     restart: unless-stopped
     ports: 
       - 8787:8787
@@ -31,6 +58,63 @@ services:
       - type: volume
         source: dropbox-r
         target: /dropbox
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+        
+  homeseer:
+    image: "berryk/homeseer:latest"
+    container_name: homeseer
+    hostname: homeseer
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "11000:11000" 
+    volumes:
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+      
+  remotespark:
+    container_name: remotespark
+    hostname: remotespark
+    image: "berryk/remotespark"
+    restart: unless-stopped
+    ports: 
+      - "8080:80"
+    volumes:
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+
+  mqtt:
+    container_name: mqtt
+    hostname: mqtt
+    image: "toke/mosquitto"
+    restart: unless-stopped
+    ports: 
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - type: volume
+        source: /etc/localtime
+        target: /etc/localtime
+      - type: volume
+        source: /etc/timezone
+        target: /etc/timezone
+        
+        
 
 volumes: 
   dropbox:
