@@ -2,7 +2,7 @@ version: "3.2"
 
 services: 
 
-  portainer: 
+   portainer: 
     container_name: portainer
     hostname: portainer
     image: "portainer/portainer"
@@ -10,20 +10,11 @@ services:
     ports: 
       - "9000:9000"
     volumes:
-      - type: volume
-        source: /etc/localtime
-        target: /etc/localtime
-        read_only: true
-      - type: volume
-        source: /etc/timezone
-        target: /etc/timezone
-        read_only: true
-      - type: volume
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
-        read_only: true
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
-  dd-agent:
+   dd-agent:
     container_name: dd-agent
     hostname: ddagent
     image: datadog/agent:latest
@@ -31,64 +22,37 @@ services:
     environment:
       - DD_API_KEY=7aa7e30d732f2e062e9ed52b3d3102bf
     volumes: 
-      - type: volume
-        source: /var/run/docker.sock
-        target: /var/run/docker.sock
-        read_only: true
-      - type: volume
-        source: /proc/
-        target: /host/proc/
-        read_only: true
-      - type: volume
-        source: /sys/fs/cgroup/
-        target: /host/sys/fs/cgroup
-        read_only: true
-      - type: volume
-        source: /etc/localtime
-        target: /etc/localtime
-        read_only: true
-      - type: volume
-        source: /etc/timezone
-        target: /etc/timezone
-        read_only: true
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro 
+      - /cgroup/:/host/sys/fs/cgroup:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
   
-  nginx:
+   nginx:
     container_name: nginx
     hostname: nginx
-    build: nginx/nginx/.
+    build: ../nginx/nginx/.
     restart: always
     ports:
       - 443:443
     volumes:
-      - type: volume
-        source: /etc/localtime
-        target: /etc/localtime
-        read_only: true
-      - type: volume
-        source: /etc/timezone
-        target: /etc/timezone
-        read_only: true
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
 
-  auth-duo:
+   auth-duo:
     container_name: auth-duo
     hostname: auth-duo
-    build: nginx/duo-auth-request/.
+    build: ../nginx/duo-auth-request/.
     restart: always
     ports: 
       - 3000:3000
     environment:
       - TIMEOUT=86400000
     volumes:
-      - type: volume
-        source: /etc/localtime
-        target: /etc/localtime
-        read_only: true
-      - type: volume
-        source: /etc/timezone
-        target: /etc/timezone
-        read_only: true    
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
      
-  dropbox:
+   dropbox:
     image: janeczku/dropbox
     container_name: dropbox
     hostname: dropbox
@@ -106,21 +70,15 @@ services:
          source: docker-registry
          target: /dbox/Dropbox/docker-registry 
       -  type: volume
-         source: docker-homeseer
+         source: dropbox-homeseer
          target: /dbox/Dropbox/homeseer 
       -  type: volume
          source: dropbox-config
          target: /dbox/.dropbox
-      -  type: volume
-         source: /etc/localtime
-         target: /etc/localtime
-         read_only: true
-      -  type: volume
-         source: /etc/timezone
-         target: /etc/timezone
-         read_only: true
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
 
-  rstudio: 
+   rstudio: 
     image: berryk/rstudio
     container_name: rstudio
     hostname: rstudio
@@ -133,16 +91,10 @@ services:
       - type: volume
         source: dropbox-r
         target: /dropbox
-      - type: volume
-        source: /etc/localtime
-        target: /etc/localtime
-        read_only: true
-      - type: volume
-        source: /etc/timezone
-        target: /etc/timezone
-        read_only: true
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
         
-  homeseer:
+   homeseer:
     image: "berryk/homeseer:latest"
     container_name: homeseer
     hostname: homeseer
@@ -154,18 +106,12 @@ services:
       - type: volume
         source: dropbox-homeseer
         target: /opt/homeseer
-      - type: volume
-        source: /etc/localtime
-        target: /etc/localtime
-        read_only: true
-      - type: volume
-        source: /etc/timezone
-        target: /etc/timezone
-        read_only: true
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     devices:
       - "/dev/ttyUSB0:/dev/ttyUSB0"
       
-  remotespark:
+   remotespark:
     container_name: remotespark
     hostname: remotespark
     image: "berryk/remotespark"
@@ -173,16 +119,10 @@ services:
     ports: 
       - "8080:80"
     volumes:
-      - type: volume
-        source: /etc/localtime
-        target: /etc/localtime
-        read_only: true
-      - type: volume
-        source: /etc/timezone
-        target: /etc/timezone
-        read_only: true
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
 
-  mqtt:
+   mqtt:
     container_name: mqtt
     hostname: mqtt
     image: "toke/mosquitto"
@@ -191,30 +131,18 @@ services:
       - "1883:1883"
       - "9001:9001"
     volumes:
-      - type: volume
-        source: /etc/localtime
-        target: /etc/localtime
-        read_only: true
-      - type: volume
-        source: /etc/timezone
-        target: /etc/timezone
-        read_only: true
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
  
-  chromecast-mqtt:
+   chromecast-mqtt:
     container_name: chromecast-mqtt
     hostname: chromecast-mqtt
     image: "berryk/chromecast-mqtt"
     restart: always
     network_mode: "host" 
     volumes:
-      - type: volume
-        source: /etc/localtime
-        target: /etc/localtime
-        read_only: true
-      - type: volume
-        source: /etc/timezone
-        target: /etc/timezone
-        read_only: true
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
  
    musiccastcontrol:
     container_name: musiccastcontrol
@@ -223,32 +151,20 @@ services:
     restart: always
     network_mode: "host" 
     volumes:
-      - type: volume
-        source: /etc/localtime
-        target: /etc/localtime
-        read_only: true
-      - type: volume
-        source: /etc/timezone
-        target: /etc/timezone
-        read_only: true
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
         
-  mqtt-scripts:
+   mqtt-scripts:
     container_name: mqtt-scripts
     hostname: mqtt-scripts
     image: "berryk/mqtt-scripts-scripts"
     restart: always
     network_mode: "host" 
     volumes:
-      - type: volume
-        source: /etc/localtime
-        target: /etc/localtime
-        read_only: true
-      - type: volume
-        source: /etc/timezone
-        target: /etc/timezone
-        read_only: true
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
   
-  wetty:
+   wetty:
     container_name: wetty
     hostname: wetty
     image: "krishnasrinivas/wetty"
@@ -256,14 +172,9 @@ services:
     ports: 
       - "3000:3000"
     volumes:
-      - type: volume
-        source: /etc/localtime
-        target: /etc/localtime
-        read_only: true
-      - type: volume
-        source: /etc/timezone
-        target: /etc/timezone
-        read_only: true
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
 volumes: 
   dropbox:

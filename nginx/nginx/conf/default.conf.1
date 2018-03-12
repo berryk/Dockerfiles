@@ -1,0 +1,184 @@
+server_tokens off;
+
+map $http_upgrade $connection_upgrade {
+   default upgrade;
+   ''      close;
+}
+
+
+    
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log;
+ 
+ # Default server - returns forbidden
+ 
+    server {
+        listen 443 ssl; 
+        server_name _;
+    
+        ssl_certificate conf.d/nginx.crt;
+        ssl_certificate_key conf.d/nginx.key;
+    
+        return 404;
+    }
+    
+# Wetty SSH server
+
+    server {
+        listen 443 ssl;  
+	server_name ssh.88highlandavenue.com; 
+    
+        ssl_certificate conf.d/nginx.crt;
+        ssl_certificate_key conf.d/nginx.key;
+    
+        error_page 403 /login;
+       
+    
+        location / {
+            
+            satisfy all;
+            auth_request /auth; 
+        
+            proxy_pass http://ubuntu:32768;
+            proxy_redirect http://ubuntu:32768/ https://ssh.88highlandavenue.com/; 
+            proxy_set_header Host  ssh.88highlandavenue.com;        
+            
+            include /etc/nginx/conf.d/proxy.inc;
+        }
+        
+        include /etc/nginx/conf.d/authentication.inc;
+    }
+    
+# Portainer
+
+    server {
+        listen 443 ssl; 
+        server_name portainer.88highlandavenue.com
+    
+        ssl_certificate conf.d/nginx.crt;
+        ssl_certificate_key conf.d/nginx.key;
+    
+        error_page 403 /login;
+       
+        location / {
+            
+            satisfy all;
+            auth_request /auth; 
+        
+            proxy_pass http://ubuntu:9000/;
+            proxy_redirect http://ubuntu:9000/ https://portainer.88highlandavenue.com/; 
+            proxy_set_header Host  portainer.88highlandavenue.com;          
+            
+            include /etc/nginx/conf.d/proxy.inc; 
+        }
+        
+        include /etc/nginx/conf.d/authentication.inc;
+    }
+    
+# Rstudio
+
+    server {
+        listen 443 ssl;  
+        server_name rstudio.88highlandavenue.com
+    
+        ssl_certificate conf.d/nginx.crt;
+        ssl_certificate_key conf.d/nginx.key;
+    
+        error_page 403 /login;
+       
+        location / {
+            
+            satisfy all;
+            auth_request /auth; 
+        
+            proxy_pass http://ubuntu:8787/;
+            proxy_redirect http://ubuntu:8787/ https://rstudio.88highlandavenue.com/; 
+            proxy_set_header Host  rstudio.88highlandavenue.com;          
+            
+            include /etc/nginx/conf.d/proxy.inc; 
+        }
+        
+        include /etc/nginx/conf.d/authentication.inc;
+    }
+     
+ # Homeseer
+ 
+     server {
+        listen 443 ssl;  
+        server_name home.88highlandavenue.com
+    
+        ssl_certificate conf.d/nginx.crt;
+        ssl_certificate_key conf.d/nginx.key;
+    
+        error_page 403 /login;
+       
+        location / {
+            
+            satisfy all;
+            auth_request /auth; 
+        
+            proxy_pass http://homeseer;
+            proxy_redirect http://homeseer https://home.88highlandavenue.com/; 
+            proxy_set_header Host  home.88highlandavenue.com;          
+            
+            include /etc/nginx/conf.d/proxy.inc; 
+        }
+        
+        include /etc/nginx/conf.d/authentication.inc;
+    }
+     
+     
+ # Remote RDP
+ 
+     server {
+        listen 443 ssl;  
+        server_name remote.88highlandavenue.com
+    
+        ssl_certificate conf.d/nginx.crt;
+        ssl_certificate_key conf.d/nginx.key;
+    
+        error_page 403 /login;
+       
+        location / {
+            
+            satisfy all;
+            auth_request /auth; 
+        
+            proxy_pass http://ubuntu:8080;
+            proxy_redirect http://ubuntu:8080 https://remote.88highlandavenue.com/; 
+            proxy_set_header Host  remote.88highlandavenue.com;          
+            
+            include /etc/nginx/conf.d/proxy.inc; 
+        }
+        
+        include /etc/nginx/conf.d/authentication.inc;
+    }
+    
+ # Vivopc
+ 
+     server {
+        listen 443 ssl;  
+        server_name vivopc.88highlandavenue.com
+    
+        ssl_certificate conf.d/nginx.crt;
+        ssl_certificate_key conf.d/nginx.key;
+    
+        error_page 403 /login;
+       
+        location / {
+            
+            satisfy all;
+            auth_request /auth; 
+        
+            proxy_pass http://ubuntu:8080/rdpdirect.html?server=vivopc;
+            proxy_redirect http://ubuntu:8080 https://remote.88highlandavenue.com/; 
+            proxy_set_header Host  remote.88highlandavenue.com;          
+            
+            include /etc/nginx/conf.d/proxy.inc; 
+        }
+        
+        include /etc/nginx/conf.d/authentication.inc;
+    }
+ 
+ 
+

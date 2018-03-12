@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  nginx-proxy:
+    image: berryk/nginx-proxy
+    container_name: nginx-proxy
+    ports:
+      - "8888:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro 
+      - dropbox-nginx:/etc/nginx:rw
+
+volumes:
+  dropbox-nginx:
+    external: true 
