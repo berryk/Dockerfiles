@@ -105,7 +105,7 @@ services:
     volumes:
       - type: volume
         source: dropbox-homeseer
-        target: /opt/homeseer
+        target: /Homeseer
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     devices:
