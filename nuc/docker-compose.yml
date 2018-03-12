@@ -170,7 +170,7 @@ services:
     image: "krishnasrinivas/wetty"
     restart: always
     ports: 
-      - "3000:3000"
+      - "32768:3000"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
