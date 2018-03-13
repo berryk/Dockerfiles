@@ -167,7 +167,7 @@ services:
    wetty:
     container_name: wetty
     hostname: wetty
-    image: "krishnasrinivas/wetty"
+    image: "berryk/wetty"
     restart: always
     ports: 
       - "32768:3000"
