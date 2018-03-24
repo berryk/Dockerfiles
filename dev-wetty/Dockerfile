@@ -1,11 +1,18 @@
 # To run:
 # docker run -it --name dev-base -v /var/run/docker.sock:/var/run/docker.sock --hostname dev-base dev-base /bin/bash  
 
-FROM node:stretch
+FROM debian:latest
 MAINTAINER Keith Berry "keithwberry@gmail.com"
+
+RUN groupadd --gid 1000 berryk \
+  && useradd --uid 1000 --gid berryk --shell /bin/bash --create-home berryk
+RUN echo "berryk:berryk" | chpasswd
+RUN chown -R berryk: /home/berryk
+ENV PATH /home/berryk:$PATH
 
 RUN apt-get update -y
 RUN apt-get install -y apt-utils
+RUN apt-get install -y curl
 RUN apt-get install -y git
 RUN apt-get install -y neovim
 RUN apt-get install -y locales
@@ -22,9 +29,7 @@ RUN locale-gen en_US.UTF-8
 RUN curl -sSL https://get.docker.com/ | sh
 
 # Setup home environment
-RUN useradd berryk && echo "berryk:berryk" | chpasswd && adduser berryk sudo
-RUN mkdir /home/berryk && chown -R berryk: /home/berryk
-ENV PATH /home/berryk:$PATH
+RUN adduser berryk sudo && adduser berryk docker
 
 USER berryk
 WORKDIR /home/berryk
