@@ -1,0 +1,24 @@
+version: "3.2" 
+
+services: 
+
+   dev-base:
+    container_name: dev-base
+    hostname: dev-base
+    build: .
+    stdin_open: true
+    tty: true
+    restart: always
+#    ports:
+#    command: /bin/bash 
+    volumes:
+      - type: volume
+        source: nuc_dropbox
+        target: /home/berryk/dropbox
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+volumes: 
+  nuc_dropbox:
+    external: true
