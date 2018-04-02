@@ -21,10 +21,13 @@ services:
     restart: always
     environment:
       - DD_API_KEY=7aa7e30d732f2e062e9ed52b3d3102bf
-    volumes: 
+      - DD_LOGS_ENABLED=true
+   volumes: 
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /proc/:/host/proc/:ro 
+      - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
       - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+      - /opt/datadog-agent/conf.d:/conf.d:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
   

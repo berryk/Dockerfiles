@@ -20,6 +20,7 @@ RUN apt-get install -y tmux
 RUN apt-get install -y ssh
 RUN apt-get install -y sudo
 RUN apt-get install -y xterm
+RUN apt-get install -y fonts-powerline
 
 RUN echo "LC_ALL=en_US.UTF-8" >> /etc/environment
 RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
