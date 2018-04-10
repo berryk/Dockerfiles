@@ -99,7 +99,8 @@ services:
       - /etc/timezone:/etc/timezone:ro
         
    homeseer:
-    image: "marthoc/homeseer"
+#    image: "marthoc/homeseer"
+    build: ../homeseer/.
     container_name: homeseer
     hostname: homeseer
     restart: always
