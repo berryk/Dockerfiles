@@ -19,6 +19,8 @@ then
 
 fi
 
+/etc/init.d/dbus start
+/etc/init.d/avahi-daemon start
 cd /HomeSeer
 mono HSConsole.exe --log
 exit 0

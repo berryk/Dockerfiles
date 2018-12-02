@@ -104,9 +104,10 @@ services:
     container_name: homeseer
     hostname: homeseer
     restart: always
-    ports:
-      - "80:80"
-      - "11000:11000" 
+    network_mode: "host" 
+    #    ports:
+    #  - "80:80"
+    #  - "11000:11000" 
     volumes:
       - type: volume
         source: dropbox-homeseer
@@ -162,7 +163,8 @@ services:
    mqtt-scripts:
     container_name: mqtt-scripts
     hostname: mqtt-scripts
-    image: "berryk/mqtt-scripts-scripts"
+    #image: "berryk/mqtt-scripts-scripts"
+    build: ../mqtt-scripts-scripts/.    
     restart: always
     network_mode: "host" 
     volumes:
