@@ -8,6 +8,7 @@ WORKDIR /usr/src/app
 
 ADD https://github.com/berryk/MusicCastControl/archive/master.tar.gz .
 
+RUN tar -xvf ./master.tar.gz
 WORKDIR /usr/src/app/MusicCastControl-master
 
 RUN pip install --no-cache-dir -r ./requirements.txt

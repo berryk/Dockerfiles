@@ -203,7 +203,8 @@ services:
    musiccastcontrol:
     container_name: musiccastcontrol
     hostname: musiccastcontrol
-    image: "berryk/musiccastcontrol"
+#    image: "berryk/musiccastcontrol"
+    build: ../MusicCastControl/.
     restart: always
     network_mode: "host" 
     volumes:
