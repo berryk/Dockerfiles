@@ -5,7 +5,7 @@ services:
    portainer: 
     container_name: portainer
     hostname: portainer
-    image: "portainer/portainer"
+    image: "portainer/portainer:latest"
     restart: always
     ports: 
       - "9000:9000"
@@ -13,6 +13,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
 
    dd-agent:
     container_name: dd-agent
@@ -31,7 +36,12 @@ services:
 #     - /opt/datadog-agent/conf.d:/conf.d:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-  
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
+
    nginx:
     container_name: nginx
     hostname: nginx
@@ -42,7 +52,12 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
+   
    auth-duo:
     container_name: auth-duo
     hostname: auth-duo
@@ -55,9 +70,14 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-     
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
+   
    dropbox:
-    image: janeczku/dropbox
+    image: drodgers/dropbox
     container_name: dropbox
     hostname: dropbox
     restart: always
@@ -81,7 +101,12 @@ services:
          target: /dbox/.dropbox
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
+   
    rstudio: 
     image: berryk/rstudio
     container_name: rstudio
@@ -97,6 +122,11 @@ services:
         target: /dropbox
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
         
    homeseer:
 #    image: "marthoc/homeseer"
@@ -116,6 +146,11 @@ services:
       - /etc/timezone:/etc/timezone:ro
     devices:
       - "/dev/ttyUSB0:/dev/ttyUSB0"
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
       
    remotespark:
     container_name: remotespark
@@ -127,6 +162,11 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
 
    mqtt:
     container_name: mqtt
@@ -139,6 +179,11 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
  
    chromecast-mqtt:
     container_name: chromecast-mqtt
@@ -149,6 +194,11 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
  
    musiccastcontrol:
     container_name: musiccastcontrol
@@ -159,6 +209,11 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
         
    mqtt-scripts:
     container_name: mqtt-scripts
@@ -170,6 +225,11 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
   
    wetty:
     container_name: wetty
@@ -183,6 +243,31 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
+
+   xrdp-stretch:
+    container_name: xrdp-stretch 
+    hostname: xrdp-stretch 
+    #image: "berryk/mqtt-scripts-scripts"
+    build: ../xrdp-stretch/.    
+    #user: dockerx
+    restart: always
+    #network_mode: "host" 
+    ports: 
+      - "4350:4350"
+      - "4389:4389"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
 
 volumes: 
   dropbox:
