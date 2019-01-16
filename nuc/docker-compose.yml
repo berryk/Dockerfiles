@@ -109,7 +109,9 @@ services:
         max-file: "3"
    
    rstudio: 
-    image: berryk/rstudio
+ #    image: berryk/rstudio
+ #   image: rocker/rstudio
+    build: ../rstudio/.
     container_name: rstudio
     hostname: rstudio
     restart: always
@@ -117,12 +119,14 @@ services:
       - 8787:8787
     environment: 
       - ROOT="TRUE"
+      - PASSWORD=admin
     volumes: 
       - type: volume
         source: dropbox-r
-        target: /dropbox
+        target: /home/rstudio/dropbox
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+      - ~/.ssh:/home/rstudio/.ssh:ro
     logging: 
       driver: "json-file"
       options: 
