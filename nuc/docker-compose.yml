@@ -132,7 +132,30 @@ services:
       options: 
         max-size: "10m"
         max-file: "3"
-        
+
+   vscode: 
+    image: codercom/code-server
+    container_name: vscode
+    hostname: vscode
+    restart: always
+    ports: 
+      - 8443:8443
+    environment: 
+      - allow-http
+      - no-auth
+    volumes: 
+      - type: volume
+        source: dropbox
+        target: /home
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ~/.ssh:/home/rstudio/.ssh:ro
+    logging: 
+      driver: "json-file"
+      options: 
+        max-size: "10m"
+        max-file: "3"
+
    homeseer:
 #    image: "marthoc/homeseer"
     build: ../homeseer/.
