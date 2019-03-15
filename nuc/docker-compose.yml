@@ -100,6 +100,7 @@ services:
       -  type: volume
          source: dropbox-config
          target: /dbox/.dropbox
+      - ~/dropbox:/dbox/Dropbox/linux-dropbox
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     logging: 
@@ -134,22 +135,18 @@ services:
         max-file: "3"
 
    vscode: 
-    image: codercom/code-server
+    image: theiaide/theia-full:next
     container_name: vscode
     hostname: vscode
     restart: always
     ports: 
-      - 8443:8443
-    environment: 
-      - allow-http
-      - no-auth
+      - 4000:3000
     volumes: 
-      - type: volume
-        source: dropbox
-        target: /home
+      - ~/dropbox:/home/theia/dropbox
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      - ~/.ssh:/home/rstudio/.ssh:ro
+      - ~/.ssh:/home/theia/.ssh
+    user: "1000:1000"
     logging: 
       driver: "json-file"
       options: 
