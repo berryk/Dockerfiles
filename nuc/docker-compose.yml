@@ -2,6 +2,21 @@ version: "3.2"
 
 services:
 
+  hera:
+    container_name: hera
+    hostname: hera
+    image: aschzero/hera:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ~secrets:/certs
+    networks:
+      - hera
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
    portainer:
     container_name: portainer
     hostname: portainer
@@ -13,6 +28,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - hera
+    labels:
+      hera.hostname: portainer.88highlandavenue.com
+      hera.port: 9000
     logging:
       driver: "json-file"
       options:
@@ -35,40 +55,6 @@ services:
       - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
       - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
 #     - /opt/datadog-agent/conf.d:/conf.d:ro
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-   nginx:
-    container_name: nginx
-    hostname: nginx
-    build: ../nginx/nginx/.
-    restart: always
-    ports:
-      - 443:443
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-   auth-duo:
-    container_name: auth-duo
-    hostname: auth-duo
-    build: ../nginx/duo-auth-request/.
-    restart: always
-    ports:
-      - 3000:3000
-    environment:
-      - TIMEOUT=86400000
-    volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     logging:
@@ -101,6 +87,7 @@ services:
          source: dropbox-config
          target: /dbox/.dropbox
       - ~/dropbox:/dbox/Dropbox/linux-dropbox
+      - ~/secrets:/dbox/Dropbox/secrets
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     logging:
@@ -128,6 +115,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - ~/.ssh:/home/rstudio/.ssh:ro
+    networks:
+      - hera
+    labels:
+      hera.hostname: rstudio.88highlandavenue.com
+      hera.port: 8787
     logging:
       driver: "json-file"
       options:
@@ -139,14 +131,19 @@ services:
     container_name: vscode
     hostname: vscode
     restart: always
-    ports: 
+    ports:
       - 4000:3000
-    volumes: 
+    volumes:
       - ~/dropbox:/home/theia/dropbox
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - ~/.ssh:/home/theia/.ssh
     user: "1000:1000"
+    networks:
+      - hera
+    labels:
+      hera.hostname: code.88highlandavenue.com
+      hera.port: 4000
     logging:
       driver: "json-file"
       options:
@@ -167,6 +164,11 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - ~/.ssh:/home/jovyan/.ssh
     user: "1000:1000"
+    networks:
+      - hera
+    labels:
+      hera.hostname: jupyter.88highlandavenue.com
+      hera.port: 8888
     logging:
       driver: "json-file"
       options:
@@ -192,6 +194,11 @@ services:
     devices:
       - "/dev/ttyUSB0:/dev/ttyUSB0"
       - "/dev/ttyACM0:/dev/ttyACM0"
+    networks:
+      - hera
+    labels:
+      hera.hostname: home.88highlandavenue.com
+      hera.port: 80
     logging:
       driver: "json-file"
       options:
@@ -208,6 +215,11 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    networks:
+      - hera
+    labels:
+      hera.hostname: remote.88highlandavenue.com
+      hera.port: 8080
     logging:
       driver: "json-file"
       options:
@@ -290,6 +302,11 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - hera
+    labels:
+      hera.hostname: ssh.88highlandavenue.com
+      hera.port: 32768
     logging:
       driver: "json-file"
       options:
@@ -322,3 +339,6 @@ volumes:
   docker-registry:
   dropbox-homeseer:
   dropbox-config:
+
+networks:
+  hera:
