@@ -1,21 +1,21 @@
-version: "3.2" 
+version: "3.2"
 
-services: 
+services:
 
-   portainer: 
+   portainer:
     container_name: portainer
     hostname: portainer
     image: "portainer/portainer:latest"
     restart: always
-    ports: 
+    ports:
       - "9000:9000"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
         max-size: "10m"
         max-file: "3"
 
@@ -26,20 +26,20 @@ services:
     restart: always
     environment:
       - DD_API_KEY=7aa7e30d732f2e062e9ed52b3d3102bf
-      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true   
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true
       - DD_LOGS_ENABLED=true
-      - DD_AC_EXCLUDE="name:dd-agent" 
-    volumes: 
+      - DD_AC_EXCLUDE="name:dd-agent"
+    volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /proc/:/host/proc/:ro 
+      - /proc/:/host/proc/:ro
       - /opt/datadog-agent/run:/opt/datadog-agent/run:rw
       - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
 #     - /opt/datadog-agent/conf.d:/conf.d:ro
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
         max-size: "10m"
         max-file: "3"
 
@@ -53,88 +53,88 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
         max-size: "10m"
         max-file: "3"
-   
+
    auth-duo:
     container_name: auth-duo
     hostname: auth-duo
     build: ../nginx/duo-auth-request/.
     restart: always
-    ports: 
+    ports:
       - 3000:3000
     environment:
       - TIMEOUT=86400000
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
         max-size: "10m"
         max-file: "3"
-   
+
    dropbox:
     image: drodgers/dropbox
     container_name: dropbox
     hostname: dropbox
     restart: always
-    ports: 
-      - "17500:17500" 
-    volumes: 
+    ports:
+      - "17500:17500"
+    volumes:
       -  type: volume
          source: dropbox
          target: /dbox/Dropbox
       -  type: volume
-         source: dropbox-r 
+         source: dropbox-r
          target: /dbox/Dropbox/R
       -  type: volume
          source: docker-registry
-         target: /dbox/Dropbox/docker-registry 
+         target: /dbox/Dropbox/docker-registry
       -  type: volume
          source: dropbox-homeseer
-         target: /dbox/Dropbox/homeseer 
+         target: /dbox/Dropbox/homeseer
       -  type: volume
          source: dropbox-config
          target: /dbox/.dropbox
       - ~/dropbox:/dbox/Dropbox/linux-dropbox
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
         max-size: "10m"
         max-file: "3"
-   
-   rstudio: 
+
+   rstudio:
  #    image: berryk/rstudio
  #   image: rocker/rstudio
     build: ../rstudio/.
     container_name: rstudio
     hostname: rstudio
     restart: always
-    ports: 
+    ports:
       - 8787:8787
-    environment: 
+    environment:
       - ROOT="TRUE"
       - PASSWORD=admin
-    volumes: 
+    volumes:
       - type: volume
         source: dropbox-r
         target: /home/rstudio/dropbox
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - ~/.ssh:/home/rstudio/.ssh:ro
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
         max-size: "10m"
         max-file: "3"
 
-   vscode: 
+   vscode:
     image: theiaide/theia-full:next
     container_name: vscode
     hostname: vscode
@@ -147,9 +147,29 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - ~/.ssh:/home/theia/.ssh
     user: "1000:1000"
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+   jupyter:
+    image: jupyter/datascience-notebook
+    container_name: jupyter
+    hostname: jupyter
+    restart: always
+    command: start.sh jupyter lab --LabApp.token=''
+    ports:
+      - 8888:8888
+    volumes:
+      - ~/dropbox:/home/jovyan/dropbox
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ~/.ssh:/home/jovyan/.ssh
+    user: "1000:1000"
+    logging:
+      driver: "json-file"
+      options:
         max-size: "10m"
         max-file: "3"
 
@@ -159,10 +179,10 @@ services:
     container_name: homeseer
     hostname: homeseer
     restart: always
-    network_mode: "host" 
+    network_mode: "host"
     #    ports:
     #  - "80:80"
-    #  - "11000:11000" 
+    #  - "11000:11000"
     volumes:
       - type: volume
         source: dropbox-homeseer
@@ -172,25 +192,25 @@ services:
     devices:
       - "/dev/ttyUSB0:/dev/ttyUSB0"
       - "/dev/ttyACM0:/dev/ttyACM0"
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
         max-size: "10m"
         max-file: "3"
-      
+
    remotespark:
     container_name: remotespark
     hostname: remotespark
     image: "berryk/remotespark"
     restart: always
-    ports: 
+    ports:
       - "8080:80"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
         max-size: "10m"
         max-file: "3"
 
@@ -199,106 +219,106 @@ services:
     hostname: mqtt
     image: "toke/mosquitto"
     restart: always
-    ports: 
+    ports:
       - "1883:1883"
       - "9001:9001"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
         max-size: "10m"
         max-file: "3"
- 
+
    chromecast-mqtt:
     container_name: chromecast-mqtt
     hostname: chromecast-mqtt
     image: "berryk/chromecast-mqtt"
     restart: always
-    network_mode: "host" 
+    network_mode: "host"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
         max-size: "10m"
         max-file: "3"
- 
+
    musiccastcontrol:
     container_name: musiccastcontrol
     hostname: musiccastcontrol
 #    image: "berryk/musiccastcontrol"
     build: ../MusicCastControl/.
     restart: always
-    network_mode: "host" 
+    network_mode: "host"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
         max-size: "10m"
         max-file: "3"
-        
+
    mqtt-scripts:
     container_name: mqtt-scripts
     hostname: mqtt-scripts
     #image: "berryk/mqtt-scripts-scripts"
-    build: ../mqtt-scripts-scripts/.    
+    build: ../mqtt-scripts-scripts/.
     restart: always
-    network_mode: "host" 
+    network_mode: "host"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
         max-size: "10m"
         max-file: "3"
-  
+
    wetty:
     container_name: wetty
     hostname: wetty
 #    image: "krishnasrinivas/wetty"
     image: "berryk/wetty"
     restart: always
-    ports: 
+    ports:
       - "32768:3000"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
         max-size: "10m"
         max-file: "3"
 
    xrdp-stretch:
-    container_name: xrdp-stretch 
-    hostname: xrdp-stretch 
+    container_name: xrdp-stretch
+    hostname: xrdp-stretch
     #image: "berryk/mqtt-scripts-scripts"
-    build: ../xrdp-stretch/.    
+    build: ../xrdp-stretch/.
     #user: dockerx
     restart: always
-    #network_mode: "host" 
-    ports: 
+    #network_mode: "host"
+    ports:
       - "4350:4350"
       - "4389:4389"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    logging: 
+    logging:
       driver: "json-file"
-      options: 
+      options:
         max-size: "10m"
         max-file: "3"
 
-volumes: 
+volumes:
   dropbox:
   dropbox-r:
   docker-registry:
   dropbox-homeseer:
-  dropbox-config: 
+  dropbox-config:
