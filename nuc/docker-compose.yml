@@ -2,15 +2,15 @@ version: "3.2"
 
 services:
 
-  hera:
-    container_name: hera
-    hostname: hera
-    image: aschzero/hera:latest
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ~secrets:/certs
+   cloudflare:
+    container_name: cloudflare
+    hostname: cloudflare 
+    build: ../cloudflare/. 
+    restart: always
+    #    ports: 
+    #  - "443:443" 
     networks:
-      - hera
+      - cloudflare 
     logging:
       driver: "json-file"
       options:
@@ -28,17 +28,33 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - hera
-    labels:
-      hera.hostname: portainer.88highlandavenue.com
-      hera.port: 9000
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
 
+   nginx:
+    container_name: nginx
+    hostname: nginx
+    build: ../nginx/nginx/.
+    restart: always
+    #ports:
+    # - 443:443 
+    volumes:
+     - /etc/localtime:/etc/localtime:ro
+     - /etc/timezone:/etc/timezone:ro
+    networks:
+      - cloudflare 
+    #labels:
+    #     hera.hostname: nginx.88highlandavenue.com
+    #  hera.port: 443 
+    logging:
+     driver: "json-file"
+     options:
+      max-size: "10m"
+      max-file: "3"
+   
    dd-agent:
     container_name: dd-agent
     hostname: ddagent
@@ -107,7 +123,8 @@ services:
       - 8787:8787
     environment:
       - ROOT="TRUE"
-      - PASSWORD=admin
+#      - PASSWORD=admin
+      - DISABLE_AUTH=true
     volumes:
       - type: volume
         source: dropbox-r
@@ -115,11 +132,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - ~/.ssh:/home/rstudio/.ssh:ro
-    networks:
-      - hera
-    labels:
-      hera.hostname: rstudio.88highlandavenue.com
-      hera.port: 8787
     logging:
       driver: "json-file"
       options:
@@ -139,11 +151,6 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - ~/.ssh:/home/theia/.ssh
     user: "1000:1000"
-    networks:
-      - hera
-    labels:
-      hera.hostname: code.88highlandavenue.com
-      hera.port: 4000
     logging:
       driver: "json-file"
       options:
@@ -164,11 +171,6 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - ~/.ssh:/home/jovyan/.ssh
     user: "1000:1000"
-    networks:
-      - hera
-    labels:
-      hera.hostname: jupyter.88highlandavenue.com
-      hera.port: 8888
     logging:
       driver: "json-file"
       options:
@@ -181,10 +183,10 @@ services:
     container_name: homeseer
     hostname: homeseer
     restart: always
-    network_mode: "host"
-    #    ports:
-    #  - "80:80"
-    #  - "11000:11000"
+    #network_mode: "host"
+    ports:
+      - "80:80"
+      - "11000:11000"
     volumes:
       - type: volume
         source: dropbox-homeseer
@@ -194,11 +196,6 @@ services:
     devices:
       - "/dev/ttyUSB0:/dev/ttyUSB0"
       - "/dev/ttyACM0:/dev/ttyACM0"
-    networks:
-      - hera
-    labels:
-      hera.hostname: home.88highlandavenue.com
-      hera.port: 80
     logging:
       driver: "json-file"
       options:
@@ -215,11 +212,6 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-    networks:
-      - hera
-    labels:
-      hera.hostname: remote.88highlandavenue.com
-      hera.port: 8080
     logging:
       driver: "json-file"
       options:
@@ -302,11 +294,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - hera
-    labels:
-      hera.hostname: ssh.88highlandavenue.com
-      hera.port: 32768
     logging:
       driver: "json-file"
       options:
@@ -341,4 +328,4 @@ volumes:
   dropbox-config:
 
 networks:
-  hera:
+  cloudflare:
