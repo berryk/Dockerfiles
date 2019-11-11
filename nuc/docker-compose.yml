@@ -11,6 +11,8 @@ services:
     #  - "443:443" 
     networks:
       - cloudflare 
+    volumes: 
+      - ~/secrets/cloudflare:/etc/cloudflared:ro
     logging:
       driver: "json-file"
       options:
@@ -102,6 +104,12 @@ services:
       -  type: volume
          source: dropbox-config
          target: /dbox/.dropbox
+      -  type: volume
+         source: pihole 
+         target: /dbox/Dropbox/pihole
+      -  type: volume
+         source: dnsmasq
+         target: /dbox/Dropbox/dnsmasq
       - ~/dropbox:/dbox/Dropbox/linux-dropbox
       - ~/secrets:/dbox/Dropbox/secrets
       - /etc/localtime:/etc/localtime:ro
@@ -185,7 +193,7 @@ services:
     restart: always
     #network_mode: "host"
     ports:
-      - "80:80"
+      - "8880:80"
       - "11000:11000"
     volumes:
       - type: volume
@@ -320,12 +328,43 @@ services:
         max-size: "10m"
         max-file: "3"
 
+   pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    network_mode: "host"
+    volumes: 
+      - type: volume
+        source: pihole
+        target: /etc/pihole/
+      - type: volume
+        source: dnsmasq
+        target: /etc/dnsmasq.d/
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment: 
+      WEBPASSWORD:
+      ServerIP: 192.168.1.200 
+      TZ: America/New_York  
+    dns:
+      - 127.0.0.1
+      - 1.1.1.1
+    cap_add:
+      - NET_ADMIN
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 volumes:
   dropbox:
   dropbox-r:
   docker-registry:
   dropbox-homeseer:
   dropbox-config:
+  pihole:
+  dnsmasq:
 
 networks:
   cloudflare:
