@@ -2,6 +2,20 @@ version: "3.2"
 
 services:
 
+   cloudflare-rdp:
+    container_name: cloudflare-rdp
+    hostname: cloudflare-rdp 
+    build: ../cloudflare/. 
+    restart: always
+    network_mode: "host"
+    volumes: 
+      - ~/secrets/cloudflare-rdp:/etc/cloudflared:ro
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+   
    cloudflare:
     container_name: cloudflare
     hostname: cloudflare 
@@ -82,7 +96,7 @@ services:
         max-file: "3"
 
    dropbox:
-    image: drodgers/dropbox
+    image: guennobzh/dropbox 
     container_name: dropbox
     hostname: dropbox
     restart: always
@@ -106,10 +120,13 @@ services:
          target: /dbox/.dropbox
       -  type: volume
          source: pihole 
-         target: /dbox/Dropbox/pihole
+         target: /dbox/Dropbox/pihole/conf
       -  type: volume
          source: dnsmasq
-         target: /dbox/Dropbox/dnsmasq
+         target: /dbox/Dropbox/pihole/dnsmasq
+      -  type: volume
+         source: hosts
+         target: /dbox/Dropbox/pihole/hosts
       - ~/dropbox:/dbox/Dropbox/linux-dropbox
       - ~/secrets:/dbox/Dropbox/secrets
       - /etc/localtime:/etc/localtime:ro
@@ -339,6 +356,9 @@ services:
       - type: volume
         source: dnsmasq
         target: /etc/dnsmasq.d/
+      - type: volume
+        source: hosts
+        target: /etc/hosts.d/
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment: 
@@ -365,6 +385,7 @@ volumes:
   dropbox-config:
   pihole:
   dnsmasq:
+  hosts:
 
 networks:
   cloudflare:
