@@ -124,9 +124,10 @@ services:
       -  type: volume
          source: dnsmasq
          target: /dbox/Dropbox/pihole/dnsmasq
-      -  type: volume
-         source: hosts
-         target: /dbox/Dropbox/pihole/hosts
+         #      -  type: volume
+         #source: hosts
+         #target: /dbox/Dropbox/pihole/hosts
+      - ~/pihole:/dbox/Dropbox/pihole     
       - ~/dropbox:/dbox/Dropbox/linux-dropbox
       - ~/secrets:/dbox/Dropbox/secrets
       - /etc/localtime:/etc/localtime:ro
@@ -356,9 +357,10 @@ services:
       - type: volume
         source: dnsmasq
         target: /etc/dnsmasq.d/
-      - type: volume
-        source: hosts
-        target: /etc/hosts.d/
+        #- type: volume
+        #source: hosts
+        #target: /etc/hosts
+      - ~/pihole/hosts:/etc/hosts 
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     environment: 
