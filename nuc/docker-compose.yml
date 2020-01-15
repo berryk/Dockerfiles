@@ -2,6 +2,20 @@ version: "3.2"
 
 services:
 
+   cron:
+    container_name: cron
+    hostname: cron
+    build: ../cron/. 
+    restart: always
+    volumes: 
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+   
    cloudflare-rdp:
     container_name: cloudflare-rdp
     hostname: cloudflare-rdp 
